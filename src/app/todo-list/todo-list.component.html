@@ -3,7 +3,7 @@
     
     <!-- To-Do Form Section -->
     <form method="post"
-          class="flex flex-col gap-5 shadow-2xl px-10 py-8 border border-neutral-800 bg-neutral-900 rounded-2xl w-full md:w-1/2 transition-transform hover:scale-[1.02] duration-300">
+          class="flex flex-col gap-5 shadow-2xl px-10 py-8 border border-neutral-800 bg-neutral-900 rounded-2xl w-full md:w-1/2 transition-transform hover:scale-[1.02] duration-300" (ngSubmit)="pushToList()">
       
       <label for="todoitem" class="text-2xl font-extrabold text-white tracking-wide uppercase">
         Add to-do-list
@@ -11,9 +11,9 @@
 
       <input [formControl]="item" type="text" name="todoitem"
              class="border border-neutral-700 bg-neutral-800 text-white placeholder-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-lime-400 focus:border-lime-500 transition duration-200"
-             placeholder="Enter task...">
+             placeholder="Enter task..." required>
 
-      <button type="button" (click)="pushToList()"
+      <button type="submit"
               class="bg-lime-500 text-black font-bold uppercase tracking-wider px-4 py-2 rounded-lg hover:bg-lime-600 transition duration-200 shadow-md">
         Add
       </button>
@@ -23,12 +23,14 @@
     <ol class="w-full md:w-1/2 max-h-[32rem] bg-neutral-900 text-white shadow-2xl rounded-2xl overflow-auto p-6 border border-neutral-800">
       <p class="text-2xl font-black uppercase tracking-wide text-lime-400 mb-4">Your Tasks</p>
 
-      @for (todo of list; track todo._id) {
-        <li key={todo._id}
-            class="border-b border-neutral-700 last:border-none py-3 px-4 hover:bg-neutral-800 rounded-md transition-all text-white font-medium">
-          {{todo.task}}
-        </li>
-      }
+      <li *ngFor="let todo of list; trackBy: trackById" 
+          class="border-b border-neutral-700 last:border-none py-3 px-4 hover:bg-neutral-800 rounded-md transition-all text-white font-medium">
+        {{ todo.task }}
+        <div class="float-right">
+          <button (click)="updateTodo(todo)" class="ml-2 bg-yellow-500 text-white py-1 px-3 rounded">Edit</button>
+          <button (click)="deleteTodo(todo._id!)" class="ml-2 bg-red-500 text-white py-1 px-3 rounded">Delete</button>
+        </div>
+      </li>
     </ol>
 
   </div>

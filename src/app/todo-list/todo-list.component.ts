@@ -1,18 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { TodoService, Todo } from '../services/todo.service'; // Import Todo interface
+import { CommonModule } from '@angular/common';
+import { TodoService, Todo } from '../services/todo.service';
 
 @Component({
   selector: 'todo-list',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './todo-list.component.html',
-  styleUrl: './todo-list.component.css'
+  styleUrls: ['./todo-list.component.css']
 })
 export class TodoListComponent implements OnInit {
 
   item = new FormControl("");
-  list: Todo[] = []; // Update the type to Todo[]
+  list: Todo[] = [];
 
   constructor(private todoService: TodoService) {}
 
@@ -27,7 +28,6 @@ export class TodoListComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error fetching todos:', error);
-        // Optionally display an error message to the user
       }
     });
   }
@@ -40,13 +40,46 @@ export class TodoListComponent implements OnInit {
         next: (response) => {
           console.log('Todo created:', response);
           this.item.setValue("");
-          this.fetchTodos(); // Refresh the list after adding
+          this.fetchTodos();
         },
         error: (error) => {
           console.error('Error creating todo:', error);
-          // Optionally display an error message to the user
         }
       });
     }
+  }
+
+  updateTodo(todo: Todo) {
+    const updatedTask = prompt('Edit your task:', todo.task);
+    if (updatedTask && updatedTask !== todo.task) {
+      const updatedTodo: Todo = { ...todo, task: updatedTask };
+      this.todoService.updateTodo(updatedTodo).subscribe({
+        next: (response) => {
+          console.log('Todo updated:', response);
+          this.fetchTodos();
+        },
+        error: (error) => {
+          console.error('Error updating todo:', error);
+        }
+      });
+    }
+  }
+
+  deleteTodo(todoId: string) {
+    if (confirm('Are you sure you want to delete this todo?')) {
+      this.todoService.deleteTodo(todoId).subscribe({
+        next: (response) => {
+          console.log('Todo deleted:', response);
+          this.fetchTodos();
+        },
+        error: (error) => {
+          console.error('Error deleting todo:', error);
+        }
+      });
+    }
+  }
+
+  trackById(index: number, item: Todo): string {
+    return item._id!;
   }
 }
