@@ -1,0 +1,29 @@
+<div class="quote-grid">
+  @for (quote of quotes; track quote) {
+    <div 
+      class="quote-card" 
+      [class.special]="isSpecialAuthor(quote.author)"
+    >
+      <!-- Author Info -->
+      <div class="author-info">
+        <div class="author-avatar">
+          {{ quote.author[0] }}
+        </div>
+        <div>
+          <h3 class="author-name">{{ quote.author }}</h3>
+          <p class="author-date">{{ quote.published }}</p>
+        </div>
+      </div>
+
+      <!-- Quote Content -->
+      <blockquote class="quote-text">
+        “{{ quote.quote }}”
+      </blockquote>
+
+      <!-- Quote Title -->
+      <div class="quote-title">
+        — {{ quote.title }}
+      </div>
+    </div>
+  }
+</div>
